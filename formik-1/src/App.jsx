@@ -20,7 +20,8 @@ function App() {
     confirmPassword: yup.string().oneOf([yup.ref("password")],"passwords do not match").required("required line"),
     email: yup.string().email("email is not valid").required("required line"),
     confirmEmail: yup.string().email("email is not valid").oneOf([yup.ref("email")],"email do not match").required("required line"),
-  })
+  });
+  
   return (
     <div className="App">
 

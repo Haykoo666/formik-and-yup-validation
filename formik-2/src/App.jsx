@@ -1,12 +1,35 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
 import { Button, Form, Container, Row , Col } from 'react-bootstrap';
-// Formik and yup  validation
+  // Formik and yup  validation
 import { useFormik } from 'formik';
 import * as Yup from "yup";
 
+import reactLogo from './assets/react.svg'
+import './App.css'
+
 function App() {
+
+  const validationSchema = Yup.object({
+    firstName: Yup.string()
+      .min(2, 'Name must be at least 2 characters long')
+      .max(40, 'Name cannot be longer than 40 characters')
+      .required('Name is required'),
+    lastName: Yup.string()
+      .min(2, 'Last name must be at least 2 characters long')
+      .max(50, 'Last name cannot be longer than 50 characters')
+      .required('Last name is required'),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    password: Yup.string()
+      .required('Password is required')
+      .min(8, 'Password must be at least 8 characters long')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z])/,
+        'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'
+      ),
+    confirmPassword: Yup.string().oneOf([Yup.ref("password")],"passwords do not match").required("required line"),
+  })
 
   const {values, handleChange, handleSubmit, errors, handleBlur, touched} = useFormik({
     initialValues: {
@@ -16,14 +39,7 @@ function App() {
       password: "",
       confirmPassword: ""
     },
-    validationSchema: Yup.object({
-      firstName: Yup.string().max(10, "Must be 10 characters or less").required("Required"),
-      lastName: Yup.string().max(10, "Must be 10 characters or less").required("Required"),
-      email: Yup.string().email("email is not valid").required("Required"),
-      password: Yup.string().max(10, "Must be 10 characters or less").required("Required"),
-      confirmPassword: Yup.string().oneOf([Yup.ref("password")],"passwords do not match").required("required line"),
-
-    }),
+    validationSchema,
     onSubmit: (values) => {
       console.log("Sent data", values);
     }
@@ -111,7 +127,7 @@ function App() {
                 <Form.Group className="mb-3" >
                     <Form.Label htmlFor="password">Confirm Password</Form.Label>
                 <Form.Control 
-                  type="confirmPassword" 
+                  type="password" 
                   id="confirmPassword" 
                   name="confirmPassword"
                   value={values.confirmPassword} 
